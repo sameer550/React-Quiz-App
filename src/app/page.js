@@ -2,6 +2,8 @@
 import Image from "next/image";
 import QuizLayout from "./components/QuizLayout";
 import Result from "./components/Result";
+import Scorebar from "./components/Scorebar";
+import QuestionBar from "./components/questionbar";
 import questionJson from "./questions.json";
 import { useEffect, useState } from "react";
 export default function Home() {
@@ -12,7 +14,7 @@ export default function Home() {
   const [incorrectAnswer, setIncorrectAnswer] = useState(0);
   const [selectedButton, setSelectedButton] = useState(null);
   const [progress, setProgress] = useState(5);
-  const [isFlg, setIsFlg] = useState(true);
+  const [showQuiz, setShowQuiz] = useState(true);
   const [progressValues, setProgressValues] = useState({
     calculatePercentage: 0,
     calculateLowest: 0,
@@ -27,19 +29,12 @@ export default function Home() {
     );
     if (selectedButton == correctAnswer) {
       setScore((prev) => prev + 1);
-
-      //setSelectedQuestionIndex((prev)=> prev+1);
-      //console.log("Correct answer",score);
     } else if (selectedButton !== correctAnswer) {
       setIncorrectAnswer((prev) => prev + 1);
-      //setQuestionIndex((prev)=> prev+1);
     }
   }, [selectedButton]);
 
   useEffect(() => {
-    calculatePercentage();
-    highestPossiblescore();
-    calculateLowest();
     setProgressValues((prev) => ({
       ...prev,
       highestPossiblescore: highestPossiblescore(),
@@ -52,26 +47,11 @@ export default function Home() {
     if (selectedQuestionIndex === 0) {
       return 0;
     }
-    return Math.round((score / 20) * 100);
+    return Math.round((score / totalQuestions) * 100);
   };
-
-  //setProgressValues((prev) => ({ ...prev, maximumScore: 90 }));
   const calculateLowest = () => {
-    // console.log(incorrectAnswer);
-    //const remaining = totalQuestions - selectedQuestionIndex;
-    // const ans = remaining + incorrectAnswer;
-    // const total = (ans * 100);
-    // const totalSum = total / 20
-    // console.log("total Sum",totalSum)
-    // return totalSum
-    //const total = (score - remaining) / totalQuestions;
-    //const totalSum = total * 100;
-    //console.log(totalSum);
-    const remainingAnswers = 20 - selectedQuestionIndex;
-    const ans = remainingAnswers + incorrectAnswer;
-    const rem = ans / 20;
+    const rem = score/selectedQuestionIndex;
     const totalSum = Math.round(rem * 100);
-    console.log(totalSum);
     return totalSum;
   };
 
@@ -79,32 +59,40 @@ export default function Home() {
     const remaining = totalQuestions - selectedQuestionIndex;
     const ans = remaining + score;
     const total = ans * 100;
-    const totalSum = total / 20;
+    const totalSum = total / totalQuestions;
     return totalSum;
   };
   return (
-    <main className="flex  flex-col items-center   bg-white">
-      {isFlg ? (
-        <QuizLayout
-          question={{ ...quizQuestions[selectedQuestionIndex] }}
-          key={questionJson.question}
-          selectedQuestionIndex={selectedQuestionIndex}
-          setSelectedQuestionIndex={setSelectedQuestionIndex}
-          score={score}
-          setSelectedButton={setSelectedButton}
-          selectedButton={selectedButton}
-          setScore={setScore}
-          setProgress={setProgress}
-          progress={progress}
-          progressValues={progressValues}
-          setQuestionIndex={setQuestionIndex}
-          questionIndex={questionIndex}
-          quizQuestions={quizQuestions}
-          setIsFlg={setIsFlg}
-        />
+    <main className="min-h-screen max-h-screen p-0 bg-white">
+      <div className="">
+      {showQuiz ? (
+        <div>
+          <QuestionBar progress={progress}/>
+          <div className="flex  flex-col items-center">
+          <QuizLayout
+            question={{ ...quizQuestions[selectedQuestionIndex] }}
+            key={questionJson.question}
+            selectedQuestionIndex={selectedQuestionIndex}
+            setSelectedQuestionIndex={setSelectedQuestionIndex}
+            score={score}
+            setSelectedButton={setSelectedButton}
+            selectedButton={selectedButton}
+            setScore={setScore}
+            setProgress={setProgress}
+            progress={progress}
+            progressValues={progressValues}
+            setQuestionIndex={setQuestionIndex}
+            questionIndex={questionIndex}
+            quizQuestions={quizQuestions}
+            setShowQuiz={setShowQuiz}
+          />
+          <Scorebar progressValues={progressValues}/>       
+        </div>
+        </div>
       ) : (
         <Result score={score} incorrectAnswer={incorrectAnswer} />
       )}
+      </div>
     </main>
   );
 }

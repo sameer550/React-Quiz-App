@@ -1,9 +1,17 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import React, { useEffect } from "react";
+import { useState,useMemo } from "react";
 import { IoIosStar } from "react-icons/io";
 import { IoIosStarOutline } from "react-icons/io";
-import { useRouter } from 'next/navigation'
+import questionJson from "../questions.json";
+
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
 
 const QuizLayout = ({
   question,
@@ -15,48 +23,51 @@ const QuizLayout = ({
   setSelectedQuestionIndex,
   setProgress,
   progress,
-  progressValues,
   setQuestionIndex,
   questionIndex,
   quizQuestions,
-  setIsFlg
+  setShowQuiz
 }) => {
-  const router = useRouter();
+
+  const decodedQuestions = questionJson.map(question => {
+    const decodedQuestion = {
+      ...question,
+      category: decodeURIComponent(question.category),
+      question: decodeURIComponent(question.question),
+      correct_answer: decodeURIComponent(question.correct_answer),
+      incorrect_answers: question.incorrect_answers.map(answer => decodeURIComponent(answer)),
+    };
+
+    decodedQuestion.allAnswers = [decodedQuestion.correct_answer, ...decodedQuestion.incorrect_answers];
+    return decodedQuestion;
+  });
+
+  const [quizData, setQuizData] = useState(decodedQuestions);
+  console.log(quizData);
   const correctAnswer = decodeURIComponent(question?.correct_answer);
-
-  const colors = ["bg-[#000000]", "bg-[#717171]", "bg-[#d2d2d2]"];
-  const handleButtonClick = (text) => {
-    setSelectedButton(text);
-    setProgress((prevIndex) => prevIndex + 5);
-  };
-
-  const shuffleArray = (array) => array.sort(() => Math.random() - 1);
-
-  const mixButtons = [
-    decodeURIComponent(question?.correct_answer),
+  const mixButtons = [correctAnswer,
     ...question?.incorrect_answers.map((answer) => decodeURIComponent(answer)),
   ];
-
+  
+  const shuffleArray = (array) => array.sort(() => Math.random() - 1);
   const buttons = shuffleArray(mixButtons);
+
+  const handleButtonClick = (text) => {
+    setSelectedButton(text);
+    setProgress((prevIndex) => prevIndex + 4.75);
+  };
+
+
   const difficultyLevel = question.difficulty;
-
   return (
-    <div className="h-screen w-50">
-      {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-0">
-        <div
-          className="bg-gray-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
-          style={{ width: `${progress}%` }}
-        ></div>
-      </div>
-
+    <div className="">
       {/* Quiz Question */}
       <div className="mt-20">
         <h1 className="text-xl text-current">
           {" "}
           Question {questionIndex} of 20{" "}
         </h1>
-        <p className="text-xs text-slate-500">
+        <p className="text-gray-500 text-[12px]">
           {decodeURIComponent(question?.category)}
         </p>
 
@@ -83,7 +94,9 @@ const QuizLayout = ({
             </div>
           )}
         </div>
-        <p className="mt-5 max-w-xs overflow-hidden">{decodeURIComponent(question?.question)}</p>
+        <div className="flex flex-col items-start justify-start ">
+        <p className="mt-5 max-w-xs ">{decodeURIComponent(question?.question)}</p>
+        </div>
         <div className="flex flex-wrap justify-around gap-1  max-w-[500px] mt-10">
           {buttons.map((button, index) => (
             <button
@@ -116,12 +129,10 @@ const QuizLayout = ({
           {selectedButton && (
             <div className="flex justify-center">
               <button
-                className="w-[190px] py-2 my-2 ps-2 pe-2 text-xs border border-solid border-black text-center rounded-md"
+                className="w-[190px] py-2  ps-1 pe-1 text-xs border border-solid border-black text-center rounded-md"
                 onClick={() => {
-                  console.log("Question",questionIndex);
-                  console.log("quiz Question",quizQuestions.length)
                   if (questionIndex > quizQuestions.length - 1) {
-                    setIsFlg(false);
+                    setShowQuiz(false);
                   }
                   setSelectedButton(null);
                   setSelectedQuestionIndex((prevIndex) => prevIndex + 1);
@@ -134,87 +145,6 @@ const QuizLayout = ({
           )}
         </div>
       </div>
-      <div className="scoreBarTxts flex justify-between">
-          <div className="">
-            <p>
-              Score :{" "}
-              {isNaN(Math.round((score / 20) * 100))
-                ? 0
-                : Math.round((score / 20) * 100)}
-              %
-            </p>
-          </div>
-          <div>
-            <p>
-              Max Score :{" "}
-              {/* {Math.round(((score + (20 - selectedQuestionIndex)) / 20) * 100)} */}
-              {progressValues.highestPossiblescore}%
-            </p>
-          </div>
-        </div>
-      <div className="">
-        <div className="w-full border-2 border-gray-600 rounded-[5px] h-6  mt-1 relative">
-          {/* {progressValues.map((progress, index) => (
-            <div
-              key={index}
-              className={`absolute ${colors[index]} h-full transition-all duration-300 ease-in-out`}
-              style={{ width: `${progress}%` }}
-            ></div>
-          ))} */}
-          <div
-            className={`absolute ${colors[0]} h-full transition-all duration-300 ease-in-out z-10`}
-            style={{
-              width: `${progressValues.calculatePercentage}%`,
-              transition: "width 0.5s",
-            }}
-          ></div>
-          <div
-            className={`absolute ${colors[2]} h-full transition-all duration-300 ease-in-out`}
-            style={{
-              width: `${progressValues.highestPossiblescore}%`,
-              transition: "width 0.5s",
-            }}
-          ></div>
-          <div
-            className={`absolute ${colors[1]} h-full transition-all duration-300 ease-in-out`}
-            style={{
-              width: `${progressValues.calculateLowest}%`,
-              transition: "width 0.5s",
-            }}
-          ></div>
-        </div>
-
-        {/* <div className="w-full flex flex-row border-2 border-gray-600 rounded-[5px] mt-1">
-        <span
-          className="bg-black h-7"
-          style={{
-            width: `${progressValues.calculatePercentage}%`,
-            transition: "width 0.5s",
-          }}
-        ></span>
-        <span
-          className="bg-gray-500 h-7"
-          style={{
-            width: `${progressValues.highestPossiblescore}%`,
-            transition: "width 0.5s",
-          }}
-        ></span>
-        <span
-          className="bg-gray-400 h-7"
-          style={{
-            width: `${calculateWidth(maxmScore - attemptQuestionsScore)}%`,
-            transition: "width 0.5s",
-          }}
-        ></span>
-      </div> */}
-      </div>
-
-      {/* 
-          <ProgressBar>
-            <ProgressBar striped variant="warning" now={Math.round(score / selectedQuestionIndex * 100)} key={1} />
-            <ProgressBar variant="success" now={Math.round(score / totalAnswered * 100)} key={2} />
-            <ProgressBar striped variant="danger" now={Math.round((score + (selectedQuestionIndex - totalAnswered)) / selectedQuestionIndex * 100)} key={3} />
-          </ProgressBar> */}
     </div>
   );
 };
