@@ -3,16 +3,26 @@ import Image from "next/image";
 import QuizLayout from "./components/QuizLayout";
 import Result from "./components/Result";
 import Scorebar from "./components/Scorebar";
-import QuestionBar from "./components/questionbar";
+import QuestionBar from "./components/QuestionBar";
 import questionJson from "./questions.json";
 import { useEffect, useState } from "react";
+
+const quizQuestions = questionJson?.map((qJson) => ({
+  ...qJson,
+  correct_answer: decodeURIComponent(qJson.correct_answer),
+  incorrect_answers: qJson.incorrect_answers.map((ans) =>
+    decodeURIComponent(ans)
+  ),
+  question: decodeURIComponent(qJson.question),
+  category: decodeURIComponent(qJson.category),
+}));
+
 export default function Home() {
-  const quizQuestions = [...questionJson];
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [questionIndex, setQuestionIndex] = useState(1);
   const [incorrectAnswer, setIncorrectAnswer] = useState(0);
-  const [selectedButton, setSelectedButton] = useState(null);
+  const [options, setOptions] = useState(null);
   const [progress, setProgress] = useState(5);
   const [showQuiz, setShowQuiz] = useState(true);
   const [progressValues, setProgressValues] = useState({
@@ -23,16 +33,16 @@ export default function Home() {
 
   const totalQuestions = 20;
   useEffect(() => {
-    if (!selectedButton) return;
+    if (!options) return;
     const correctAnswer = decodeURIComponent(
       questionJson[selectedQuestionIndex]?.correct_answer
     );
-    if (selectedButton == correctAnswer) {
+    if (options == correctAnswer) {
       setScore((prev) => prev + 1);
-    } else if (selectedButton !== correctAnswer) {
+    } else if (options !== correctAnswer) {
       setIncorrectAnswer((prev) => prev + 1);
     }
-  }, [selectedButton]);
+  }, [options]);
 
   useEffect(() => {
     setProgressValues((prev) => ({
@@ -41,7 +51,7 @@ export default function Home() {
       calculateLowest: calculateLowest(),
       calculatePercentage: calculatePercentage(),
     }));
-  }, [selectedButton]);
+  }, [options]);
 
   const calculatePercentage = () => {
     if (selectedQuestionIndex === 0) {
@@ -50,7 +60,7 @@ export default function Home() {
     return Math.round((score / totalQuestions) * 100);
   };
   const calculateLowest = () => {
-    const rem = score/selectedQuestionIndex;
+    const rem = score / selectedQuestionIndex;
     const totalSum = Math.round(rem * 100);
     return totalSum;
   };
@@ -63,35 +73,37 @@ export default function Home() {
     return totalSum;
   };
   return (
-    <main className="min-h-screen max-h-screen p-0 bg-white">
+    <main className="min-h-screen max-h-screen bg-white">
       <div className="">
-      {showQuiz ? (
-        <div>
-          <QuestionBar progress={progress}/>
-          <div className="flex  flex-col items-center">
-          <QuizLayout
-            question={{ ...quizQuestions[selectedQuestionIndex] }}
-            key={questionJson.question}
-            selectedQuestionIndex={selectedQuestionIndex}
-            setSelectedQuestionIndex={setSelectedQuestionIndex}
-            score={score}
-            setSelectedButton={setSelectedButton}
-            selectedButton={selectedButton}
-            setScore={setScore}
-            setProgress={setProgress}
-            progress={progress}
-            progressValues={progressValues}
-            setQuestionIndex={setQuestionIndex}
-            questionIndex={questionIndex}
-            quizQuestions={quizQuestions}
-            setShowQuiz={setShowQuiz}
-          />
-          <Scorebar progressValues={progressValues}/>       
-        </div>
-        </div>
-      ) : (
-        <Result score={score} incorrectAnswer={incorrectAnswer} />
-      )}
+        {showQuiz ? (
+          <div>
+            <QuestionBar progress={progress} />
+            <div className="flex flex-col items-center">
+              <QuizLayout
+                question={{ ...quizQuestions[selectedQuestionIndex] }}
+                key={questionJson.question}
+                selectedQuestionIndex={selectedQuestionIndex}
+                setSelectedQuestionIndex={setSelectedQuestionIndex}
+                score={score}
+                setOptions={setOptions}
+                options={options}
+                setScore={setScore}
+                setProgress={setProgress}
+                progress={progress}
+                progressValues={progressValues}
+                setQuestionIndex={setQuestionIndex}
+                questionIndex={questionIndex}
+                quizQuestions={quizQuestions}
+                setShowQuiz={setShowQuiz}
+              />
+            </div>
+            <div className="flex justify-center">
+              <Scorebar progressValues={progressValues} />
+            </div>
+          </div>
+        ) : (
+          <Result score={score} incorrectAnswer={incorrectAnswer} />
+        )}
       </div>
     </main>
   );
