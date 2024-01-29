@@ -1,6 +1,13 @@
 import React from 'react'
 
 const QuestionBar = ({progress})=> {
+  // var progress = 0;
+  // if(!selectedQuestionIndex){
+  //   progress+=1;
+  // }
+  // else{
+  //   progress = selectedQuestionIndex;
+  // }
   return (
       
        <div className="mt-0">

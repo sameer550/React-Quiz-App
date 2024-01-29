@@ -2,7 +2,7 @@ import React from "react";
 const Scorebar = ({ progressValues }) => {
   const colors = ["bg-[#000000]", "bg-[#717171]", "bg-[#d2d2d2]"];
   return (
-    <div className="w-2/5">
+    <div className="w-full sm:w-2/5">
       <div className="scoreBarTxts flex justify-between">
         <div className="">
           <p>Score : {progressValues.calculatePercentage}%</p>
