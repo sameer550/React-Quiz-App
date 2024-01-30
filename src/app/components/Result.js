@@ -12,6 +12,14 @@ const Result = ({ score, incorrectAnswer }) => {
       <h3 className="text-xl text-center">Percentage: {percentage}</h3>
       {percentage >= 50 && <h2 className="text-xl  text-green-800">Passed</h2>}
       {percentage < 50 && <h2 className="text-xl text-rose-700">Failed</h2>}
+      <div className="flex justify-center">
+        <button
+          className="w-[190px] py-2 my-2 ps-2 pe-2 text-xs border border-solid border-black text-center rounded-md"
+          onClick={() => location.reload()}
+        >
+          Restart Quiz
+        </button>
+      </div>
     </div>
   );
 };

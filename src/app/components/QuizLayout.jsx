@@ -1,24 +1,13 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { useMemo } from "react";
-import { IoIosStar } from "react-icons/io";
-import { IoIosStarOutline } from "react-icons/io";
 import SelectedBtn from "./selectedBtn";
 import Optionbtns from "./optionBtns";
 import Star from "./Star";
 
-const shuffleOptions = (
-  correctAnswer,
-  incorrectAnswers,
-  selectedQuestionIndex
-) => {
-  //if (selectedQuestionIndex < quizQuestions.length+1) {
-  //console.log(selectedQuestionIndex," < ",quizQuestions.length+1)
+const shuffleOptions = (correctAnswer, incorrectAnswers) => {
   const array = [...incorrectAnswers, correctAnswer];
   return array.sort(() => Math.random() - 0.5);
-  //} else {
-  // return;
-  //}
 };
 const QuizLayout = ({
   question,
@@ -30,18 +19,8 @@ const QuizLayout = ({
   selectedQuestionIndex,
   setProgress,
 }) => {
-  const starConfig = {
-    hard: [1, 2, 3],
-    medium: [1, 2],
-    easy: [1],
-  };
   const buttons = useMemo(
-    () =>
-      shuffleOptions(
-        question.correct_answer,
-        question.incorrect_answers,
-        selectedQuestionIndex
-      ),
+    () => shuffleOptions(question.correct_answer, question.incorrect_answers),
     [selectedQuestionIndex]
   );
 

@@ -4,7 +4,7 @@ import QuizLayout from "./components/QuizLayout";
 import Result from "./components/Result";
 import Scorebar from "./components/Scorebar";
 import QuestionBar from "./components/QuestionBar";
-import HomeStart from "./components/HomeStart"
+import HomeStart from "./components/HomeStart";
 import questionJson from "./questions.json";
 import { useEffect, useState } from "react";
 
@@ -91,30 +91,29 @@ export default function Home() {
 
   return (
     <main className="min-h-screen max-h-screen bg-white">
-    {!startQuiz ? (
-    <div>
-      <QuestionBar progress={progress} />
-      <div className=" mx-auto ">
-        {showQuiz ? (
-          <div>
-            <div className="flex flex-col items-center">
-              <QuizLayout {...quizLayoutProps} />
-            </div>
-            <div className="flex justify-center">
-              <Scorebar progressValues={progressValues} />
-            </div>
+      {!startQuiz ? (
+        <div>
+          <div className=" mx-auto ">
+            {showQuiz ? (
+              <div>
+                <QuestionBar progress={progress} />
+                <div className="flex flex-col items-center">
+                  <QuizLayout {...quizLayoutProps} />
+                </div>
+                <div className="flex justify-center">
+                  <Scorebar progressValues={progressValues} />
+                </div>
+              </div>
+            ) : (
+              <Result score={score} incorrectAnswer={incorrectAnswer} />
+            )}
           </div>
-        ) : (
-          <Result score={score} incorrectAnswer={incorrectAnswer} />
-        )}
-      </div>
-    </div>
-      ):(
+        </div>
+      ) : (
         <>
-        <HomeStart setStartQuiz={setStartQuiz}/>
+          <HomeStart setStartQuiz={setStartQuiz} />
         </>
-      )
-      }
+      )}
     </main>
   );
 }

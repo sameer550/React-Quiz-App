@@ -1,18 +1,15 @@
 "use client";
 import React from "react";
-// import ExpertizoLogo from "../components/img/Expertizo-logo.png";
-import { useRouter } from "next/navigation";
 
-const HomeStart=({setStartQuiz})=> {
-  const router = useRouter();
+const HomeStart = ({ setStartQuiz }) => {
   return (
     <div className="h-screen w-50 ">
       <div className="flex justify-center">
-      <img
-        className="max-w-full "
-        src={"/Expertizo-logo.png"}
-        alt="image description"
-      />
+        <img
+          className="max-w-full "
+          src={"/Expertizo-logo.png"}
+          alt="image description"
+        />
       </div>
       <div className="flex justify-center">
         <button
@@ -24,6 +21,6 @@ const HomeStart=({setStartQuiz})=> {
       </div>
     </div>
   );
-}
+};
 
 export default HomeStart;
