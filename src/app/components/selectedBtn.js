@@ -7,7 +7,7 @@ const SelectedBtn = ({
   selectedQuestionIndex,
   setSelectedQuestionIndex,
   quizQuestions,
-  setShowQuiz
+  setShowQuiz,
 }) => {
   return (
     <div>
@@ -23,7 +23,7 @@ const SelectedBtn = ({
             </div>
             <div className="">
               <button
-                className="w-[150px] py-1 mt-10 ps-1 pe-1 text-xs border border-solid border-black text-center rounded-md"
+                className="w-[150px] py-1 mt-10 ps-1 pe-1 text-black text-xs border border-solid border-black text-center rounded-md"
                 onClick={() => {
                   setSelectedQuestionIndex((prevIndex) => prevIndex + 1);
                   if (selectedQuestionIndex >= quizQuestions.length - 1) {

@@ -13,7 +13,7 @@ const HomeStart = ({ setStartQuiz }) => {
       </div>
       <div className="flex justify-center">
         <button
-          className="w-[190px] py-2 my-2 ps-2 pe-2 text-xs border border-solid border-black text-center rounded-md"
+          className="w-[190px] py-2 my-2 ps-2 pe-2 text-xs text-black border border-solid border-black text-center rounded-md"
           onClick={() => setStartQuiz(false)}
         >
           start Quiz

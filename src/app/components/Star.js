@@ -8,7 +8,7 @@ const starConfig = {
 const Star = ({ difficultyLevel }) => {
   return (
     <div>
-      <div className="display: inline-flex mr-3">
+      <div className="display: inline-flex mr-3 text-black">
         {Array.from({ length: 3 }).map((_, index) => (
           <div key={index} className="">
             {starConfig[difficultyLevel].includes(index + 1) ? (

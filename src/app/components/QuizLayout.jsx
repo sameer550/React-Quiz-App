@@ -46,14 +46,16 @@ const QuizLayout = ({
     <div className="w-1/1">
       {/* Quiz Question */}
       <div className="mt-10">
-        <h1 className="text-xl text-current">
+        <h1 className="text-xl text-current text-black">
           {" "}
           Question {selectedQuestionIndex + 1} of 20{" "}
         </h1>
-        <p className="text-gray-500 text-[12px]">{question.category}</p>
+        <p className="text-black text-[12px]">{question.category}</p>
         <Star difficultyLevel={difficultyLevel} />
         <div className="flex flex-col justify-start ">
-          <p className="mt-5 max-w-md h-12 w-400">{question.question}</p>
+          <p className="mt-5 max-w-md h-12 w-400 text-black">
+            {question.question}
+          </p>
         </div>
         <Optionbtns {...optionBtnsProps} />
         <SelectedBtn {...selectedbtnProps} />

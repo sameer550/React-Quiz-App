@@ -5,10 +5,14 @@ const Scorebar = ({ progressValues }) => {
     <div className="w-full sm:w-2/5">
       <div className="scoreBarTxts flex justify-between">
         <div className="">
-          <p>Score : {progressValues.calculatePercentage}%</p>
+          <p className="text-black">
+            Score : {progressValues.calculatePercentage}%
+          </p>
         </div>
         <div>
-          <p>Max Score : {progressValues.highestPossiblescore}%</p>
+          <p className="text-black">
+            Max Score : {progressValues.highestPossiblescore}%
+          </p>
         </div>
       </div>
       <div className="">

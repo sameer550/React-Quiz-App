@@ -17,9 +17,9 @@ const OptionBtns = ({
           <button
             disabled={selectedOption}
             key={index}
-            className={`w-[190px] py-1 my-2 ps-2 pe-2 text-xs border border-solid border-black text-center rounded-md  ${
+            className={`w-[190px] py-1 my-2 ps-2 pe-2 text-black text-xs border border-solid border-black text-center rounded-md  ${
               selectedOption === button
-                ? "bg-black text-gray-50"
+                ? "bg-black text-[#ffffff] text-gray-50"
                 : "bg-[#e5e6e5]"
             }`}
             onClick={() => handleOptionSelect(button)}
